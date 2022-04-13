@@ -1,0 +1,264 @@
+---
+title: "The Search for the Best NFL Defenses (1978-2021)"
+author: "Oscar Monroy"
+date: "3/20/2022"
+output: 
+  html_document:
+    theme: darkly
+    df_print: paged
+---
+
+# Table of Every NFL Team's Defensive Stats from 1978 to 2021
+
+```{r, message=FALSE}
+library(dplyr)
+def <- read.csv("nfl_def.csv")
+names(def)[1] <- "Team"
+def
+```
+
+# Finding the Greaest Defenses
+
+```
+Generally, people consider the '85 Chicago Bears to be the best defense of all time. 
+Without a doubt they were one of the best to ever do it, but were they 
+truly number 1? The 1985 Chicago Bears played in an era where passing plays were considered 
+a novelty and running backs were the main players that moved the ball forward, so they 
+specialized in creating immense pressure in the backfield and terrorizing running backs. They
+weren't too shabby at passing defense, but that wasn't the main point of that defense since 
+they didn't need to prepare much for that (except against Dan Marino's Miami Dolphins, who 
+the Bears lost to). Nowadays, if you were to play the '85 Bears in today's game, they would 
+more than likely get absolutely dominated as the game has evolved more in the direction that 
+Dan Marino had played in: pass happy. Nevertheless that Bears team is still considered 
+one of the greatest for a good reason and part of that is because they hardly allowed their
+opponents to score. However there are more teams that people overlook when talking about 
+NFL defenses, and we're about to see who they are with some simple data analysis.
+```
+# Teams that Just Didn't Like Points Being Scored on Them
+
+```{r}
+# First let's grab the data for total points allowed for teams that
+# ranked first in their respective year.
+num1 <- def %>%
+  filter(Rank %in% c(1)) %>%
+  group_by(Team)
+num1
+# We're certainly seeing an abundance of Steelers, 49ers, and Vikings on this list...
+
+# Let's get a look at who the top dogs are in total 
+# points allowed in their respective year.
+num1 %>%
+  select(Team, Year, Gms, TotPts) %>%
+  arrange(TotPts)
+# Now here is an interesting table with an unexpected #1 defense: the '82 Dolphins.
+# Now I put in the the Gms variable (Games Played) in here to show an obvious disparity.
+# During the 1982, the Players' Strike was going which dropped the number of games
+# that season, so ultimately, we end up with this strange bit of info where the
+# Miami Dolphins appeared to have achieved one of the greatest feats in sports
+# history at first glance until you realize there was only 9 games.Aside from that,
+# we still see the '85 Bears in the Top 5 (Top 4 if your exclude the Dolphins),
+
+# Here's is another interesting factoid: the '86 Bears were actually better in every way
+# than the '85 Bears. However, due to a malicious injury caused to QB Jim Mcmahon, their
+# season was completely derailed and now the '86 counterpart is mostly forgotten. If that
+# injury didn't happen, they would be remembered far more than they currently are.
+
+# Also, the Tennessee Titans (my favorite team) comes in at 3rd place (or 2nd because...
+# you know) and also could've been considered one of the greatest teams in history if 
+# they weren't stopped in the playoffs by rival Baltimore Ravens.
+
+# Just for fun, let's see the '82 Dolphins stats:
+num1[40, ]
+# Using their Points Allowed per Game stat, we can estimate where their TotPts would've been
+# had they played 7 more games for a standard 16 game season:
+131 + (14.6 * 7)
+# Not too shabby. At 233.2, they would've ranked at #15 in the list
+# of best defensive teams of their respective year.
+
+# You may have notcied that I was using the limitation of only having the
+# number 1 rated defense of their year but that alone doesn't tell a story. A team could
+# be experts at preventing touchdowns from happening but they could also
+# simultaneously "struggle" at preventing the ball from traveling to their side
+# of the field...
+t <- def %>%
+  filter(Year != 1982) %>%
+  arrange(TotPts)
+head(t, 10)
+# and the team that fits that bill is the 2000 Baltimore Ravens. They were experts 
+# at preventing points from being scored but still allowed the opposition to gain yards.
+# It is likely that they were just exceptional at the red-zone defense and/or 
+# getting forced turnovers. Regardless, you'll notice how they're polar opposites
+# of their rival from that same year: the Tennessee Titans. Titans allowed more points
+# but allowed the least yards [not to say they were bad (far from it) at preventing 
+# points, but it really is interesting at the opposite method both teams' defenses had].
+# Another anomaly is the 1978 Denver Broncos who rank 7th overall and 6th best defense
+# of that particular year. Just look at the total yards they allowed; it's like 
+# an extreme version of the 2000 Ravens. What even was happening there?
+# Oh and the legendary Steel Curtain Steelers rank #4 overall but #3 of that year.
+# Honestly, what was going on in 1978 and 2000? Maybe we'll find out.
+```
+
+## Winner of the "Team that Didn't Like Points Being Scored on Them" Award:
+## The 2000 Baltimore Ravens
+### Not bad for a team that ranked #2 in that same year. I still don't like them.
+
+# Teams that Weren't Fans of Seeing their Opponents Move
+
+```{r}
+# I'm going back to using the rank 1 defenses of the year as the limitation
+# again only because I like surprising people when I do remove the restriction.
+num1 %>%
+  select(Team, Year, Gms, TotYds) %>%
+  filter(Year != 1982) %>%
+  arrange(TotYds)
+# First of all, the '85 Bears rank #19 and I blame Dan Marino for that.
+# Secondly, we see a load of fresh new faces on the top 10. The '91
+# Philadelphia Eagles had a monstrous defense that forced their rivals
+# New York Giants, Washington Redskins, and Dallas Cowboys
+# to use elite offensive linemen and while the defense still held up
+# incredibly well, they still fell short of the Super Bowl. To add
+# insult to injury, their rival from New York ultimately won the big game.
+# (Granted the New York Giants had help from the greatest defensive 
+# player to ever exist: Lawrence Taylor, but that's a story for another time)
+
+# Also, look at that. We finally know who #1 in 1978 was: the LA Rams.
+
+# Time to remove the restrictions
+t2 <- def %>%
+  filter(Year != 1982) %>%
+  arrange(TotYds)
+head(t2, 10)
+# Turns out there weren't any surprises this time. The top 10
+# is expectedly filled with rank 1 defenses except for the
+# 1991 New Orleans Saints, 2000 Baltimore Ravens and, 
+# 1978 Dallas Cowboys. This only reinforces that 1978 was the
+# wildest year for NFL defenses and also maybe 2000. The 2008
+# Pittsburgh Steelers being here is also neat considering that
+# defense really came in handy for that Super Bowl win.
+```
+
+
+## Winner of the "Team that Didn't Take too Kindly to Seeing Movement" Award:
+## The 1991 Philadelphia Eagles
+### At least they won their Super Bowl 26 years later.
+
+```
+Well we've seen the best historical defenses when we account for the most
+generalized stats like Total Points Allowed in a Season and Total Yards
+Allowed in a Season. Of course, the teams that came out on top when only looking 
+at these stats are truly the greatest that we'll ever see. But generalized stats
+alone aren't fun; I want to look at teams that specialized in specific defensive
+aspects of the game like the rushing defense and passing defense. I'd like to make
+some predictions before we get into that though. Prediction 1: the best rushing defense
+will consist of those incredible 1978 defenses that defined the year and also
+the '85 Bears. Prediction 2: the best passing defenses will consist of 21st century
+era NFL defenses and contain 2013-2014 Seattle Seahawks, any of the Ed Reed era
+Baltimore Ravens, and the 2015 Denver Broncos. 
+```
+
+# Teams that Just Had to Stuff the Run
+
+```{r}
+# Of course, we'll start out with the run defense as the run was the
+# bread and butter of 20th century (and 21st century Tennessee Titans)
+# offenses. Passing offenses were scarce in the 20th century, so we'll 
+# leave that for last. We'll also do the number 1 defenses of their year first
+# just for that surprise factor when people realize that the best defense
+# doesn't actually have the best rushing defense, maybe.
+num1 %>%
+  select(Team, Year, Gms, RushYds) %>%
+  filter(Year != 1982) %>%
+  arrange(RushYds)
+# Hey look! The '85 Bears are at 10th place.
+# Anyways, you'll notice that (in the top 10 at least), that there is an
+# even split of 20th century and 21st century era defenses. And the team
+# with the best rushing defense overall is the '95 San Francisco 49ers, who
+# fielded and incredible run stuffing defense that barely allowed over 1000
+# yards and an offense led by the main QB himself Steve Young. We also see
+# the legendary '91 Philadelphia Eagles and a surprising new face: the 
+# '98 San Diego Chargers, who lost 3 years ago in the Super Bowl to our number 1
+# overall rushing defense. The surprising 21st century era rushing defenses consist
+# the eternal AFC North rivals: the Pittsburgh Steelers and Baltimore Ravens, both 
+# of whom were in a "arms race" of sorts to create the best defense to beat one
+# another with. Then there is the 2014 Legion of Boom Seattle Seahawks, who had 
+# such a ferocious defense in general that they earned the cheesy, yet intimidating
+# nicknane Legion of Boom. This was also the team that tragically lost to the 
+# New England Patriots on a last second interception because they didn't run the ball.
+
+# Anyways, let's remove the rank-1-only restrictions.
+t3 <- def %>%
+  filter(Year != 1982) %>%
+  arrange(RushYds)
+head(t3, 10)
+# This whole list is surprisng. First of all, I would've never expected to see
+# the Detroit Lions in a top 10 list of the best of anything (unless it's
+# a list of the top 10 saddest fanbases). The 2000 Baltimore Raven once again
+# reaches the top of the list, only allowing a measley 970 yards. Then we have 
+# the Minnesota Vikings who ranked number 8 best defense of their own year yet
+# fielded the second best rushing defense ever, only allowing 985 yards. We have yet 
+# another new face in the 2010 Steelers before we finally reach the '95 SF 49ers.
+# Well, if you wanna know how the 2006 Vikings made number 2 overall despite being
+# number 8 for their year, just look at their rushing yards allowed stats and then look 
+# at their passing yards allowed and total points allowed stats. Absolutely
+# beqildering, yet in character for the perpetually cursed Minnesota franchise.
+# Not as bewildering as the Lions being here. That is still a "What the hell? moment.
+```
+
+## Winner of the "Best Run Stuffing Team" Award:
+## The 2000 Baltimore Ravens
+### ...bastards.
+
+## Honorary award goes to the 2014 Detroit Lions!
+### It can't be easy to root for the Lions but at least here's this award. 
+
+# The Anti Air Teams
+
+```{r}
+# We're now gonna look at the best pass defenses in NFL history and
+# we'll follow the same formula we always do.
+num1 %>%
+  select(Team, Year, Gms, PassYds) %>%
+  filter(Year != 1982) %>%
+  arrange(PassYds)
+# I don't know if it's obvious, but there is a problem here.
+# Passing offenses didn't become popular until later on and
+# it was a slow process. Just look at the increasing amount of
+# pass attempts done per year in one of my previous bodies of
+# works (about NFL passing offenses). According to New York Tines,
+# "In 1980, teams pass the football 47 percent of the time, compared 
+# with just 38 percent in 1977...". So my main point here is that there
+# is gonna be some skewed numbers looking at older team because they
+# didn't have to deal with much passing offenses back then.
+
+# The only way (I believe) to truly look at who the best passing defense is to
+# have a "passes allowed" to "total passes done against the team" stat.
+# Unfortunately, we don't have such a stat at the moment. Best I can
+# do is maybe set the Year variable to start from 1984 (when Dan Marino
+# started popularizing the passing offense) and also just brag that the
+# 2000 Tennessee Titans are still on the top 10 list despite the issue.
+num1 %>%
+  select(Team, Year, Gms, PassYds) %>%
+  filter(Year > 1983) %>%
+  arrange(PassYds)
+# If we look at the top 3, we see that the 1991 Philadephia Eagles once again
+# reigns supreme with the 2000 Tennessee Titans coming in second. Now for the
+# big surprise, we get the New York Jets coming in at number 3 which is 
+# absolutely crazy considering they had to deal with Tom Brady twice a year.
+
+# But now we remove the ranking restrictions.
+t4 <- def %>%
+  filter(Year > 1983) %>%
+  arrange(PassYds)
+head(t4, 10)
+# And now we have a new number 1 overall passing defense: the 2006 Oaklands 
+# Raiders. The Raiders haven't been a steady franchise ever since they lost the
+# Super Bowl in 2002, so to see them after 2002 here is quite a shock. We do
+# see some shifts in rankings such as the addition of '88 Kansas Chiefs (who
+# ranked number 10 in 1988) and the '84 New Orleans Saints. Every team ranked
+# after the '88 Vikings in the previous top 10 list got push out of the top 10
+# list here without the restrictions. 
+```
+
+## Winner of the "Anti Air Team" Award:
+## The 2006 Oakland Raiders
+### Maybe you'll win one soon... in Las Vegas. Sorry Oakland.
