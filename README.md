@@ -1,2 +1,2 @@
 # NFL_defenses
-Less of a coding project and more of a writing one. I just use stats to briefly explain the history of some of the best defenses the NFL ever had and also categorize them by certain aspect of  a defense.  Special thanks to The Football Databases for the data.
+Less of a coding project and more of a writing one. I just use R's powerful dplyr library to query the stats I want to see so I can give commentary on some of the best defenses the NFL ever had and also categorize them by certain aspects of  a defense.  Special thanks to The Football Databases for the data.
